@@ -1,7 +1,15 @@
 
+import sqlite3
 from flask import Flask, jsonify, request, render_template
 
 app = Flask(__name__)
+
+
+# Database connection
+def get_db_connection():
+    conn = sqlite3.connect('students.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
 # Home endpoint
@@ -10,7 +18,7 @@ def home():
     return render_template('index.html')
 
 
-# Student endpoint
+# Original Student endpoint
 @app.route('/student')
 def get_student():
     return jsonify({
@@ -22,7 +30,7 @@ def get_student():
     })
 
 
-# Hello endpoint
+# Original Hello endpoint
 @app.route('/hello')
 def say_hello():
     name = request.args.get('name', 'Joy')
@@ -32,7 +40,7 @@ def say_hello():
     })
 
 
-# Custom API Endpoint 1: Campus Information
+# Original Campus Information endpoint
 @app.route('/campus')
 def campus_info():
     return jsonify({
@@ -43,7 +51,7 @@ def campus_info():
     })
 
 
-# Custom API Endpoint 2: Grade Calculator
+# Original Grade Calculator endpoint
 @app.route('/grade')
 def calculate_grade():
     score = request.args.get('score', type=float)
@@ -71,6 +79,55 @@ def calculate_grade():
         "score": score,
         "remark": remark
     })
+
+
+# Activity 7: Get all students from SQLite
+@app.route('/students')
+def get_students():
+    conn = get_db_connection()
+
+    students = conn.execute(
+        'SELECT * FROM students ORDER BY id'
+    ).fetchall()
+
+    conn.close()
+
+    return jsonify([dict(student) for student in students])
+
+
+# Activity 7: Get one student by database ID
+@app.route('/students/<int:id>')
+def get_student_by_id(id):
+    conn = get_db_connection()
+
+    student = conn.execute(
+        'SELECT * FROM students WHERE id = ?',
+        (id,)
+    ).fetchone()
+
+    conn.close()
+
+    if student is None:
+        return jsonify({
+            "error": "Student not found"
+        }), 404
+
+    return jsonify(dict(student))
+
+
+# Additional Task: Filter students by program
+@app.route('/students/program/<string:program>')
+def get_students_by_program(program):
+    conn = get_db_connection()
+
+    students = conn.execute(
+        'SELECT * FROM students WHERE program = ? ORDER BY id',
+        (program,)
+    ).fetchall()
+
+    conn.close()
+
+    return jsonify([dict(student) for student in students])
 
 
 if __name__ == '__main__':

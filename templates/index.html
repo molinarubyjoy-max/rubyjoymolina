@@ -10,26 +10,24 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 700px;
-            margin: 40px auto;
+            max-width: 800px;
+            margin: 35px auto;
             padding: 20px;
-            background-color: #f2f5fa;
+            background: #f2f5fa;
             color: #222;
         }
 
         h1 {
             text-align: center;
             color: #17365d;
-            margin-bottom: 25px;
         }
 
         h2 {
             color: #245a91;
-            margin-top: 0;
         }
 
         .section {
-            background-color: white;
+            background: white;
             padding: 20px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
@@ -38,8 +36,8 @@
 
         button {
             padding: 10px 15px;
-            margin-top: 8px;
-            background-color: #245a91;
+            margin: 5px 3px 5px 0;
+            background: #245a91;
             color: white;
             border: none;
             border-radius: 5px;
@@ -47,7 +45,7 @@
         }
 
         button:hover {
-            background-color: #17365d;
+            background: #17365d;
         }
 
         input {
@@ -55,19 +53,30 @@
             max-width: 100%;
             border: 1px solid #ccc;
             border-radius: 5px;
-            box-sizing: border-box;
         }
 
         .result {
             margin-top: 15px;
-            padding: 10px;
-            background-color: #eef4fa;
+            padding: 12px;
+            background: #eef4fa;
             border-radius: 5px;
             overflow-wrap: anywhere;
         }
 
         .result:empty {
             display: none;
+        }
+
+        .student-card {
+            background: white;
+            border: 1px solid #d5dfeb;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 10px 0;
+        }
+
+        .student-card p {
+            margin: 6px 0;
         }
 
         footer {
@@ -83,12 +92,9 @@
 
     <h1>Student API Interface</h1>
 
-
-    <!-- Student Information -->
+    <!-- Original Student Information -->
     <div class="section">
         <h2>Student Information</h2>
-
-        <p>Click the button to display student details.</p>
 
         <button onclick="loadStudent()">
             Load Student Information
@@ -98,7 +104,7 @@
     </div>
 
 
-    <!-- Greeting API -->
+    <!-- Original Greeting API -->
     <div class="section">
         <h2>Greeting API</h2>
 
@@ -114,11 +120,9 @@
     </div>
 
 
-    <!-- Additional Task: Campus Information API -->
+    <!-- Original Campus API -->
     <div class="section">
         <h2>Campus Information</h2>
-
-        <p>Click the button to display campus information.</p>
 
         <button onclick="loadCampus()">
             Load Campus Information
@@ -128,16 +132,14 @@
     </div>
 
 
-    <!-- Grade Calculator API -->
+    <!-- Original Grade Calculator -->
     <div class="section">
         <h2>Grade Calculator</h2>
-
-        <p>Enter your score from 0 to 100.</p>
 
         <input
             type="number"
             id="scoreInput"
-            placeholder="Enter score"
+            placeholder="Enter score (0-100)"
             min="0"
             max="100"
             step="any"
@@ -151,21 +153,52 @@
     </div>
 
 
+    <!-- Activity 7: All Students from Database -->
+    <div class="section">
+        <h2>Students from Database</h2>
+
+        <p>Display all student records stored in SQLite.</p>
+
+        <button onclick="loadStudents()">Load Students</button>
+
+        <div id="studentList" class="result"></div>
+    </div>
+
+
+    <!-- Activity 7 Additional Task: Filter by Program -->
+    <div class="section">
+        <h2>Search Students by Program</h2>
+
+        <p>Enter a program to find matching database records.</p>
+
+        <input
+            type="text"
+            id="programInput"
+            placeholder="Example: BSIT"
+        >
+
+        <button onclick="loadStudentsByProgram()">
+            Search Program
+        </button>
+
+        <div id="programResult" class="result"></div>
+    </div>
+
+
     <footer>
-        Laboratory Activity 6 - Flask API Web Interface
+        Laboratory Activities 6 and 7 - Flask API
     </footer>
 
 
     <script>
 
-        // Student Information API
+        // Display one sample student from the original API
         function loadStudent() {
             fetch('/student')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Request failed');
                     }
-
                     return response.json();
                 })
                 .then(data => {
@@ -174,15 +207,13 @@
 
                     result.replaceChildren();
 
-                    const fields = [
-                        ['Student ID', data.student_id],
-                        ['Name', data.name],
-                        ['Program', data.program],
-                        ['Year', data.year],
-                        ['Section', data.section]
-                    ];
-
-                    fields.forEach(([label, value]) => {
+                    Object.entries({
+                        'Student ID': data.student_id,
+                        'Name': data.name,
+                        'Program': data.program,
+                        'Year': data.year,
+                        'Section': data.section
+                    }).forEach(([label, value]) => {
                         const p = document.createElement('p');
                         const b = document.createElement('b');
 
@@ -211,7 +242,7 @@
             const greeting =
                 document.getElementById('greeting');
 
-            if (name === '') {
+            if (!name) {
                 greeting.textContent =
                     'Please enter your first name.';
                 return;
@@ -222,7 +253,6 @@
                     if (!response.ok) {
                         throw new Error('Request failed');
                     }
-
                     return response.json();
                 })
                 .then(data => {
@@ -235,14 +265,13 @@
         }
 
 
-        // Additional Task: Campus Information API
+        // Campus Information API
         function loadCampus() {
             fetch('/campus')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Request failed');
                     }
-
                     return response.json();
                 })
                 .then(data => {
@@ -251,18 +280,14 @@
 
                     result.replaceChildren();
 
-                    const fields = [
-                        ['Campus', data.campus],
-                        ['Location', data.location],
-                        ['Type', data.type],
-                        ['Status', data.status]
-                    ];
-
-                    fields.forEach(([label, value]) => {
+                    Object.entries(data).forEach(([label, value]) => {
                         const p = document.createElement('p');
                         const b = document.createElement('b');
 
-                        b.textContent = label + ': ';
+                        b.textContent =
+                            label.charAt(0).toUpperCase() +
+                            label.slice(1) + ': ';
+
                         p.appendChild(b);
                         p.appendChild(
                             document.createTextNode(value)
@@ -311,6 +336,122 @@
                 })
                 .catch(error => {
                     result.textContent = error.message;
+                });
+        }
+
+
+        // Activity 7: Load all students from SQLite
+        function loadStudents() {
+            const list = document.getElementById('studentList');
+
+            list.textContent = 'Loading student records...';
+
+            fetch('/students')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Request failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    list.replaceChildren();
+
+                    if (data.length === 0) {
+                        list.textContent =
+                            'No student records found.';
+                        return;
+                    }
+
+                    data.forEach(student => {
+                        const card =
+                            document.createElement('div');
+
+                        card.className = 'student-card';
+
+                        const fields = [
+                            ['Database ID', student.id],
+                            ['Student ID', student.student_id],
+                            ['Name', student.name],
+                            ['Program', student.program],
+                            ['Year', student.year],
+                            ['Section', student.section]
+                        ];
+
+                        fields.forEach(([label, value]) => {
+                            const p = document.createElement('p');
+                            const b = document.createElement('b');
+
+                            b.textContent = label + ': ';
+                            p.appendChild(b);
+                            p.appendChild(
+                                document.createTextNode(value)
+                            );
+
+                            card.appendChild(p);
+                        });
+
+                        list.appendChild(card);
+                    });
+                })
+                .catch(() => {
+                    list.textContent =
+                        'Unable to retrieve student records.';
+                });
+        }
+
+
+        // Additional Task: Search students by program
+        function loadStudentsByProgram() {
+            const program =
+                document.getElementById('programInput')
+                    .value.trim();
+
+            const result =
+                document.getElementById('programResult');
+
+            if (!program) {
+                result.textContent =
+                    'Please enter a program, such as BSIT.';
+                return;
+            }
+
+            result.textContent = 'Searching database...';
+
+            fetch(
+                '/students/program/' +
+                encodeURIComponent(program)
+            )
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Request failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    result.replaceChildren();
+
+                    if (data.length === 0) {
+                        result.textContent =
+                            'No students found for this program.';
+                        return;
+                    }
+
+                    data.forEach(student => {
+                        const p = document.createElement('p');
+
+                        p.textContent =
+                            student.student_id + ' - ' +
+                            student.name + ' | ' +
+                            student.program + ' | Year ' +
+                            student.year + ' | Section ' +
+                            student.section;
+
+                        result.appendChild(p);
+                    });
+                })
+                .catch(() => {
+                    result.textContent =
+                        'Unable to retrieve program records.';
                 });
         }
 
