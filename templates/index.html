@@ -20,6 +20,7 @@
         h1 {
             text-align: center;
             color: #17365d;
+            margin-bottom: 25px;
         }
 
         h2 {
@@ -82,9 +83,12 @@
 
     <h1>Student API Interface</h1>
 
+
     <!-- Student Information -->
     <div class="section">
         <h2>Student Information</h2>
+
+        <p>Click the button to display student details.</p>
 
         <button onclick="loadStudent()">
             Load Student Information
@@ -92,6 +96,7 @@
 
         <div id="studentResult" class="result"></div>
     </div>
+
 
     <!-- Greeting API -->
     <div class="section">
@@ -108,11 +113,12 @@
         <p id="greeting"></p>
     </div>
 
-    <!-- Campus Information API -->
+
+    <!-- Additional Task: Campus Information API -->
     <div class="section">
         <h2>Campus Information</h2>
 
-        <p>Click below to display campus information.</p>
+        <p>Click the button to display campus information.</p>
 
         <button onclick="loadCampus()">
             Load Campus Information
@@ -120,6 +126,7 @@
 
         <div id="campusResult" class="result"></div>
     </div>
+
 
     <!-- Grade Calculator API -->
     <div class="section">
@@ -143,13 +150,15 @@
         <div id="gradeResult" class="result"></div>
     </div>
 
+
     <footer>
         Laboratory Activity 6 - Flask API Web Interface
     </footer>
 
+
     <script>
 
-        // Load Student Information
+        // Student Information API
         function loadStudent() {
             fetch('/student')
                 .then(response => {
@@ -178,7 +187,6 @@
                         const b = document.createElement('b');
 
                         b.textContent = label + ': ';
-
                         p.appendChild(b);
                         p.appendChild(
                             document.createTextNode(value)
@@ -227,7 +235,7 @@
         }
 
 
-        // Campus Information API
+        // Additional Task: Campus Information API
         function loadCampus() {
             fetch('/campus')
                 .then(response => {
@@ -255,7 +263,6 @@
                         const b = document.createElement('b');
 
                         b.textContent = label + ': ';
-
                         p.appendChild(b);
                         p.appendChild(
                             document.createTextNode(value)

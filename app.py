@@ -32,7 +32,7 @@ def say_hello():
     })
 
 
-# Campus Information endpoint
+# Custom API Endpoint 1: Campus Information
 @app.route('/campus')
 def campus_info():
     return jsonify({
@@ -43,7 +43,7 @@ def campus_info():
     })
 
 
-# Grade Calculator endpoint
+# Custom API Endpoint 2: Grade Calculator
 @app.route('/grade')
 def calculate_grade():
     score = request.args.get('score', type=float)
