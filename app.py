@@ -5,20 +5,26 @@ from flask import Flask, jsonify, request, render_template
 app = Flask(__name__)
 
 
-# Database connection
+# ==========================================
+# DATABASE CONNECTION
+# ==========================================
 def get_db_connection():
     conn = sqlite3.connect('students.db')
     conn.row_factory = sqlite3.Row
     return conn
 
 
-# Home endpoint
+# ==========================================
+# HOME PAGE
+# ==========================================
 @app.route('/')
 def home():
     return render_template('index.html')
 
 
-# Original Student endpoint
+# ==========================================
+# ORIGINAL STUDENT API
+# ==========================================
 @app.route('/student')
 def get_student():
     return jsonify({
@@ -30,7 +36,9 @@ def get_student():
     })
 
 
-# Original Hello endpoint
+# ==========================================
+# GREETING API
+# ==========================================
 @app.route('/hello')
 def say_hello():
     name = request.args.get('name', 'Joy')
@@ -40,7 +48,9 @@ def say_hello():
     })
 
 
-# Original Campus Information endpoint
+# ==========================================
+# CAMPUS INFORMATION API
+# ==========================================
 @app.route('/campus')
 def campus_info():
     return jsonify({
@@ -51,7 +61,9 @@ def campus_info():
     })
 
 
-# Original Grade Calculator endpoint
+# ==========================================
+# GRADE CALCULATOR API
+# ==========================================
 @app.route('/grade')
 def calculate_grade():
     score = request.args.get('score', type=float)
@@ -81,7 +93,9 @@ def calculate_grade():
     })
 
 
-# Activity 7: Get all students from SQLite
+# ==========================================
+# ACTIVITY 7: DISPLAY ALL DATABASE STUDENTS
+# ==========================================
 @app.route('/students')
 def get_students():
     conn = get_db_connection()
@@ -95,7 +109,9 @@ def get_students():
     return jsonify([dict(student) for student in students])
 
 
-# Activity 7: Get one student by database ID
+# ==========================================
+# ACTIVITY 7: DISPLAY ONE STUDENT BY ID
+# ==========================================
 @app.route('/students/<int:id>')
 def get_student_by_id(id):
     conn = get_db_connection()
@@ -115,14 +131,21 @@ def get_student_by_id(id):
     return jsonify(dict(student))
 
 
-# Additional Task: Filter students by program
-@app.route('/students/program/<string:program>')
-def get_students_by_program(program):
+# ==========================================
+# ADDITIONAL TASK: SEARCH BY YEAR LEVEL
+# ==========================================
+@app.route('/students/year/<int:year>')
+def get_students_by_year(year):
+    if year < 1 or year > 4:
+        return jsonify({
+            "error": "Year level must be between 1 and 4."
+        }), 400
+
     conn = get_db_connection()
 
     students = conn.execute(
-        'SELECT * FROM students WHERE program = ? ORDER BY id',
-        (program,)
+        'SELECT * FROM students WHERE year = ? ORDER BY id',
+        (year,)
     ).fetchall()
 
     conn.close()

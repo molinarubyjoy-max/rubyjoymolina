@@ -24,6 +24,7 @@
 
         h2 {
             color: #245a91;
+            margin-top: 0;
         }
 
         .section {
@@ -92,7 +93,7 @@
 
     <h1>Student API Interface</h1>
 
-    <!-- Original Student Information -->
+    <!-- Student Information -->
     <div class="section">
         <h2>Student Information</h2>
 
@@ -104,7 +105,7 @@
     </div>
 
 
-    <!-- Original Greeting API -->
+    <!-- Greeting API -->
     <div class="section">
         <h2>Greeting API</h2>
 
@@ -120,7 +121,7 @@
     </div>
 
 
-    <!-- Original Campus API -->
+    <!-- Campus Information -->
     <div class="section">
         <h2>Campus Information</h2>
 
@@ -132,7 +133,7 @@
     </div>
 
 
-    <!-- Original Grade Calculator -->
+    <!-- Grade Calculator -->
     <div class="section">
         <h2>Grade Calculator</h2>
 
@@ -153,7 +154,7 @@
     </div>
 
 
-    <!-- Activity 7: All Students from Database -->
+    <!-- Activity 7: All Database Students -->
     <div class="section">
         <h2>Students from Database</h2>
 
@@ -165,40 +166,43 @@
     </div>
 
 
-    <!-- Activity 7 Additional Task: Filter by Program -->
+    <!-- Additional Task: Search by Year Level -->
     <div class="section">
-        <h2>Search Students by Program</h2>
+        <h2>Search Students by Year Level</h2>
 
-        <p>Enter a program to find matching database records.</p>
+        <p>Enter a year level to find matching students.</p>
 
         <input
-            type="text"
-            id="programInput"
-            placeholder="Example: BSIT"
+            type="number"
+            id="yearInput"
+            placeholder="Enter year level (1-4)"
+            min="1"
+            max="4"
         >
 
-        <button onclick="loadStudentsByProgram()">
-            Search Program
+        <button onclick="loadStudentsByYear()">
+            Search Year Level
         </button>
 
-        <div id="programResult" class="result"></div>
+        <div id="yearResult" class="result"></div>
     </div>
 
 
     <footer>
-        Laboratory Activities 6 and 7 - Flask API
+        Laboratory Activities 6 and 7 - Flask API Web Interface
     </footer>
 
 
     <script>
 
-        // Display one sample student from the original API
+        // Student Information API
         function loadStudent() {
             fetch('/student')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Request failed');
                     }
+
                     return response.json();
                 })
                 .then(data => {
@@ -207,13 +211,15 @@
 
                     result.replaceChildren();
 
-                    Object.entries({
-                        'Student ID': data.student_id,
-                        'Name': data.name,
-                        'Program': data.program,
-                        'Year': data.year,
-                        'Section': data.section
-                    }).forEach(([label, value]) => {
+                    const fields = [
+                        ['Student ID', data.student_id],
+                        ['Name', data.name],
+                        ['Program', data.program],
+                        ['Year', data.year],
+                        ['Section', data.section]
+                    ];
+
+                    fields.forEach(([label, value]) => {
                         const p = document.createElement('p');
                         const b = document.createElement('b');
 
@@ -253,6 +259,7 @@
                     if (!response.ok) {
                         throw new Error('Request failed');
                     }
+
                     return response.json();
                 })
                 .then(data => {
@@ -272,6 +279,7 @@
                     if (!response.ok) {
                         throw new Error('Request failed');
                     }
+
                     return response.json();
                 })
                 .then(data => {
@@ -284,10 +292,7 @@
                         const p = document.createElement('p');
                         const b = document.createElement('b');
 
-                        b.textContent =
-                            label.charAt(0).toUpperCase() +
-                            label.slice(1) + ': ';
-
+                        b.textContent = label + ': ';
                         p.appendChild(b);
                         p.appendChild(
                             document.createTextNode(value)
@@ -342,7 +347,8 @@
 
         // Activity 7: Load all students from SQLite
         function loadStudents() {
-            const list = document.getElementById('studentList');
+            const list =
+                document.getElementById('studentList');
 
             list.textContent = 'Loading student records...';
 
@@ -351,6 +357,7 @@
                     if (!response.ok) {
                         throw new Error('Request failed');
                     }
+
                     return response.json();
                 })
                 .then(data => {
@@ -400,31 +407,33 @@
         }
 
 
-        // Additional Task: Search students by program
-        function loadStudentsByProgram() {
-            const program =
-                document.getElementById('programInput')
-                    .value.trim();
+        // Additional Task: Search students by year level
+        function loadStudentsByYear() {
+            const year =
+                document.getElementById('yearInput').value;
 
             const result =
-                document.getElementById('programResult');
+                document.getElementById('yearResult');
 
-            if (!program) {
+            if (
+                year === '' ||
+                Number(year) < 1 ||
+                Number(year) > 4 ||
+                !Number.isInteger(Number(year))
+            ) {
                 result.textContent =
-                    'Please enter a program, such as BSIT.';
+                    'Please enter a year level from 1 to 4.';
                 return;
             }
 
             result.textContent = 'Searching database...';
 
-            fetch(
-                '/students/program/' +
-                encodeURIComponent(program)
-            )
+            fetch('/students/year/' + encodeURIComponent(year))
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Request failed');
                     }
+
                     return response.json();
                 })
                 .then(data => {
@@ -432,11 +441,16 @@
 
                     if (data.length === 0) {
                         result.textContent =
-                            'No students found for this program.';
+                            'No students found for this year level.';
                         return;
                     }
 
                     data.forEach(student => {
+                        const card =
+                            document.createElement('div');
+
+                        card.className = 'student-card';
+
                         const p = document.createElement('p');
 
                         p.textContent =
@@ -446,12 +460,13 @@
                             student.year + ' | Section ' +
                             student.section;
 
-                        result.appendChild(p);
+                        card.appendChild(p);
+                        result.appendChild(card);
                     });
                 })
                 .catch(() => {
                     result.textContent =
-                        'Unable to retrieve program records.';
+                        'Unable to retrieve student records.';
                 });
         }
 

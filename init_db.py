@@ -17,8 +17,10 @@ CREATE TABLE IF NOT EXISTS students (
 )
 ''')
 
-# Remove previous sample records
+# Clear previous sample records
 cursor.execute('DELETE FROM students')
+
+# Reset the automatic ID counter
 cursor.execute(
     "DELETE FROM sqlite_sequence WHERE name = 'students'"
 )
@@ -32,9 +34,11 @@ students = [
     ('2024-00145', 'Daniel Garcia', 'BSCS', 3, 'B')
 ]
 
-# Insert records into the database
+# Insert student records
 cursor.executemany('''
-INSERT INTO students (student_id, name, program, year, section)
+INSERT INTO students (
+    student_id, name, program, year, section
+)
 VALUES (?, ?, ?, ?, ?)
 ''', students)
 
