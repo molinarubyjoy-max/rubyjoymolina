@@ -3,317 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratory Activity 8 - Student Records</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            background: #f3f6fb;
-            color: #26364a;
-            padding: 25px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: auto;
-        }
-
-        header {
-            background: linear-gradient(135deg, #102d50, #245b89);
-            color: white;
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-        }
-
-        header h1 {
-            margin-bottom: 8px;
-        }
-
-        .section {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
-        }
-
-        .section h2 {
-            color: #173b65;
-            margin-bottom: 12px;
-        }
-
-        .section-description {
-            color: #64748b;
-            margin-bottom: 18px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-        }
-
-        .form-group label {
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccd5df;
-            border-radius: 7px;
-            font-size: 14px;
-        }
-
-        button {
-            border: none;
-            padding: 11px 17px;
-            border-radius: 7px;
-            cursor: pointer;
-            font-weight: bold;
-            background: #173f6b;
-            color: white;
-        }
-
-        button:hover {
-            opacity: 0.88;
-        }
-
-        .button-row {
-            display: flex;
-            gap: 10px;
-            margin-top: 18px;
-            flex-wrap: wrap;
-        }
-
-        .secondary {
-            background: #64748b;
-        }
-
-        .danger {
-            background: #dc3545;
-        }
-
-        .edit-button {
-            background: #e5a000;
-            color: #222;
-            padding: 8px 10px;
-        }
-
-        .details-button {
-            background: #16806a;
-            padding: 8px 10px;
-        }
-
-        .search-container {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-
-        .search-container input {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 650px;
-        }
-
-        th, td {
-            padding: 13px;
-            border-bottom: 1px solid #e1e7ee;
-            text-align: left;
-            font-size: 14px;
-        }
-
-        th {
-            background: #173b65;
-            color: white;
-        }
-
-        tr:hover td {
-            background: #f6f9fc;
-        }
-
-        .message {
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 7px;
-            display: none;
-        }
-
-        .success {
-            display: block;
-            background: #d9f5e7;
-            color: #17643c;
-        }
-
-        .error {
-            display: block;
-            background: #ffe0e0;
-            color: #9b2020;
-        }
-
-        #classmateDetails {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f3f6fb;
-            border-radius: 8px;
-            display: none;
-        }
-
-        #classmateDetails h3 {
-            margin-bottom: 12px;
-            color: #173b65;
-        }
-
-        #classmateDetails p {
-            margin-bottom: 8px;
-        }
-
-        @media (max-width: 650px) {
-            body {
-                padding: 12px;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .section {
-                padding: 16px;
-            }
-
-            .search-container button {
-                flex: 1;
-            }
-        }
-    </style>
+    <title>Student Records - Laboratory Activity 9</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
 
-<div class="container">
+<header>
+    <h1>Student Records Management</h1>
+    <p>Laboratory Activity 9: System-to-System Integration</p>
+</header>
 
-    <header>
-        <h1>Student Records Management System</h1>
-        <p>Laboratory Activity 8: CRUD Web Application and Retrieving Data from Another Student's API</p>
-    </header>
+<main>
+    <section class="dashboard">
+        <div class="stat-card">
+            <h3>My Local Records</h3>
+            <p id="localCount">0</p>
+        </div>
 
-    <!-- ADD / EDIT STUDENT -->
-    <section class="section">
-        <h2 id="formTitle">Add Student Record</h2>
-        <p class="section-description">
-            Enter the student information below.
-        </p>
+        <div class="stat-card">
+            <h3>Imported Records</h3>
+            <p id="importedCount">0</p>
+        </div>
+
+        <div class="stat-card">
+            <h3>Partner Records</h3>
+            <p id="partnerCount">0</p>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Add Student Record</h2>
 
         <form id="studentForm">
-
             <input type="hidden" id="recordId">
 
             <div class="form-grid">
-
-                <div class="form-group">
-                    <label for="studentId">Student ID</label>
-                    <input type="text" id="studentId"
-                           placeholder="Example: 2026-00150" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="studentName">Name</label>
-                    <input type="text" id="studentName"
-                           placeholder="Enter full name" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="program">Program</label>
-                    <input type="text" id="program"
-                           placeholder="Example: BSIT" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="year">Year</label>
-                    <select id="year" required>
-                        <option value="">Select Year</option>
-                        <option value="1">1st Year</option>
-                        <option value="2">2nd Year</option>
-                        <option value="3">3rd Year</option>
-                        <option value="4">4th Year</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="section">Section</label>
-                    <input type="text" id="section"
-                           placeholder="Example: A" required>
-                </div>
-
+                <input type="text" id="student_id" placeholder="Student ID" required>
+                <input type="text" id="name" placeholder="Full Name" required>
+                <input type="text" id="program" placeholder="Program / Course" required>
+                <input type="number" id="year" placeholder="Year Level" min="1" max="6" required>
+                <input type="text" id="section" placeholder="Section" required>
             </div>
 
-            <div class="button-row">
-                <button type="submit" id="saveButton">Add Record</button>
-                <button type="button" class="secondary"
-                        onclick="resetForm()">Cancel / Clear Form</button>
-            </div>
-
-            <div id="formMessage" class="message"></div>
+            <button type="submit" id="submitButton">Add Local Record</button>
+            <button type="button" class="secondary" onclick="resetForm()">Clear</button>
         </form>
+
+        <p id="formMessage" class="message"></p>
     </section>
 
-
-    <!-- MY RECORDS -->
-    <section class="section">
-
+    <section class="panel">
         <h2>My Records</h2>
+        <input type="text" id="mySearch" placeholder="Search my records..." oninput="displayMyRecords()">
 
-        <p class="section-description">
-            Search and manage your own student records.
-        </p>
-
-        <div class="search-container">
-
-            <input type="text" id="mySearch"
-                   placeholder="Search by Student ID or Name...">
-
-            <button type="button" onclick="searchMyRecords()">
-                Search
-            </button>
-
-            <button type="button" class="secondary"
-                    onclick="clearMySearch()">
-                Clear
-            </button>
-
-        </div>
-
-        <div class="table-container">
+        <div class="table-wrapper">
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Program</th>
+                        <th>Year</th>
+                        <th>Section</th>
+                        <th>Source</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="myRecordsBody"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="section-heading">
+            <h2>Partner Records</h2>
+            <button type="button" onclick="loadPartnerRecords()">Retrieve Partner Records</button>
+        </div>
+
+        <input type="text" id="partnerSearch" placeholder="Search partner records..." oninput="displayPartnerRecords()">
+
+        <p id="partnerMessage" class="message"></p>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
                         <th>Student ID</th>
                         <th>Name</th>
                         <th>Program</th>
@@ -322,531 +97,324 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-
-                <tbody id="myRecords">
-                    <tr>
-                        <td colspan="7">
-                            Search for a student to display records.
-                        </td>
-                    </tr>
-                </tbody>
+                <tbody id="partnerRecordsBody"></tbody>
             </table>
         </div>
-
     </section>
 
+    <section class="panel">
+        <h2>Send Practice Record to Partner</h2>
 
-    <!-- CLASSMATE RECORDS -->
-    <section class="section">
+        <form id="sendForm">
+            <div class="form-grid">
+                <input type="text" id="send_student_id" placeholder="Student ID" required>
+                <input type="text" id="send_name" placeholder="Full Name" required>
+                <input type="text" id="send_program" placeholder="Program / Course" required>
+                <input type="number" id="send_year" placeholder="Year Level" min="1" max="6" required>
+                <input type="text" id="send_section" placeholder="Section" required>
+            </div>
 
-        <h2>Classmate's Records</h2>
+            <button type="submit">Send to Partner API</button>
+        </form>
 
-        <p class="section-description">
-            Retrieve and search records from your classmate's deployed API.
-            These records are read-only.
-        </p>
-
-        <button type="button" onclick="loadClassmateRecords()">
-            Retrieve Classmate's Records
-        </button>
-
-        <!-- SEPARATE CLASSMATE SEARCH BAR -->
-        <div class="search-container">
-
-            <input
-                type="text"
-                id="classmateSearch"
-                placeholder="Search classmate by Student ID or Name..."
-            >
-
-            <button type="button" onclick="searchClassmateRecords()">
-                Search
-            </button>
-
-            <button type="button" class="secondary"
-                    onclick="clearClassmateSearch()">
-                Clear
-            </button>
-
-        </div>
-
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Student ID</th>
-                        <th>Name</th>
-                        <th>Program</th>
-                        <th>Year</th>
-                        <th>Section</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
-                <tbody id="classmateRecords">
-                    <tr>
-                        <td colspan="7">
-                            Click Retrieve Classmate's Records to load records.
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="classmateDetails"></div>
-
-        <div id="classmateMessage" class="message"></div>
-
+        <p id="sendMessage" class="message"></p>
     </section>
-
-</div>
-
+</main>
 
 <script>
-    // Store the retrieved classmate records in memory.
-    let classmateRecords = [];
-
-    let mySearchWasPerformed = false;
+let myRecords = [];
+let partnerRecords = [];
 
 
-    // SHOW MESSAGE
-    function showMessage(elementId, message, type) {
-        const element = document.getElementById(elementId);
+async function loadMyRecords() {
+    try {
+        const response = await fetch("/api/students");
+        myRecords = await response.json();
 
-        element.textContent = message;
-        element.className = "message " + type;
+        displayMyRecords();
+        updateDashboard();
+    } catch (error) {
+        alert("Unable to load your records.");
     }
+}
 
 
-    // RESET FORM
-    function resetForm() {
-        document.getElementById("studentForm").reset();
-        document.getElementById("recordId").value = "";
-        document.getElementById("formTitle").textContent = "Add Student Record";
-        document.getElementById("saveButton").textContent = "Add Record";
+function displayMyRecords() {
+    const search = document.getElementById("mySearch").value.toLowerCase();
+    const tbody = document.getElementById("myRecordsBody");
 
-        const message = document.getElementById("formMessage");
-        message.className = "message";
-        message.textContent = "";
-    }
+    tbody.innerHTML = "";
 
-
-    // SEARCH MY RECORDS
-    async function searchMyRecords() {
-        const searchValue = document.getElementById("mySearch")
-            .value.trim().toLowerCase();
-
-        const table = document.getElementById("myRecords");
-
-        if (!searchValue) {
-            table.innerHTML = `
-                <tr>
-                    <td colspan="7">Please enter a Student ID or Name.</td>
-                </tr>
-            `;
-            mySearchWasPerformed = false;
-            return;
-        }
-
-        mySearchWasPerformed = true;
-
-        table.innerHTML = `
-            <tr><td colspan="7">Searching...</td></tr>
-        `;
-
-        try {
-            const response = await fetch("/api/students");
-
-            if (!response.ok) {
-                throw new Error("Unable to retrieve your records.");
-            }
-
-            const records = await response.json();
-
-            const filtered = records.filter(student => {
-                const id = String(student.student_id || "").toLowerCase();
-                const name = String(student.name || "").toLowerCase();
-
-                return id.includes(searchValue) ||
-                       name.includes(searchValue);
-            });
-
-            displayMyRecords(filtered);
-
-        } catch (error) {
-            table.innerHTML = `
-                <tr><td colspan="7">${error.message}</td></tr>
-            `;
-        }
-    }
-
-
-    // DISPLAY MY RECORDS
-    function displayMyRecords(records) {
-        const table = document.getElementById("myRecords");
-
-        table.innerHTML = "";
-
-        if (records.length === 0) {
-            table.innerHTML = `
-                <tr><td colspan="7">No matching records found.</td></tr>
-            `;
-            return;
-        }
-
-        records.forEach(student => {
-            const row = document.createElement("tr");
-
-            const values = [
-                student.id,
-                student.student_id,
-                student.name,
-                student.program,
-                student.year,
-                student.section
-            ];
-
-            values.forEach(value => {
-                const cell = document.createElement("td");
-                cell.textContent = value ?? "";
-                row.appendChild(cell);
-            });
-
-            const actionCell = document.createElement("td");
-
-            const editButton = document.createElement("button");
-            editButton.textContent = "Edit";
-            editButton.className = "edit-button";
-            editButton.type = "button";
-            editButton.onclick = () => editStudent(student.id);
-
-            const deleteButton = document.createElement("button");
-            deleteButton.textContent = "Delete";
-            deleteButton.className = "danger";
-            deleteButton.type = "button";
-            deleteButton.style.marginLeft = "5px";
-            deleteButton.onclick = () => deleteStudent(student.id);
-
-            actionCell.appendChild(editButton);
-            actionCell.appendChild(deleteButton);
-
-            row.appendChild(actionCell);
-            table.appendChild(row);
-        });
-    }
-
-
-    // CLEAR MY SEARCH
-    function clearMySearch() {
-        document.getElementById("mySearch").value = "";
-
-        mySearchWasPerformed = false;
-
-        document.getElementById("myRecords").innerHTML = `
-            <tr>
-                <td colspan="7">Search for a student to display records.</td>
-            </tr>
-        `;
-    }
-
-
-    // ADD OR UPDATE STUDENT
-    document.getElementById("studentForm").addEventListener("submit",
-        async function(event) {
-
-            event.preventDefault();
-
-            const recordId = document.getElementById("recordId").value;
-
-            const student = {
-                student_id: document.getElementById("studentId").value.trim(),
-                name: document.getElementById("studentName").value.trim(),
-                program: document.getElementById("program").value.trim(),
-                year: document.getElementById("year").value,
-                section: document.getElementById("section").value.trim()
-            };
-
-            const url = recordId
-                ? `/api/students/${recordId}`
-                : "/api/students";
-
-            const method = recordId ? "PUT" : "POST";
-
-            try {
-                const response = await fetch(url, {
-                    method: method,
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(student)
-                });
-
-                const result = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(result.error || "Unable to save record.");
-                }
-
-                showMessage("formMessage", result.message, "success");
-
-                resetForm();
-
-                if (mySearchWasPerformed) {
-                    await searchMyRecords();
-                }
-
-            } catch (error) {
-                showMessage("formMessage", error.message, "error");
-            }
-        }
+    const filtered = myRecords.filter(student =>
+        Object.values(student).some(value =>
+            String(value ?? "").toLowerCase().includes(search)
+        )
     );
 
+    filtered.forEach(student => {
+        const row = document.createElement("tr");
 
-    // EDIT STUDENT
-    async function editStudent(id) {
-        try {
-            const response = await fetch(`/api/students/${id}`);
-
-            if (!response.ok) {
-                throw new Error("Unable to find student.");
-            }
-
-            const student = await response.json();
-
-            document.getElementById("recordId").value = student.id;
-            document.getElementById("studentId").value = student.student_id;
-            document.getElementById("studentName").value = student.name;
-            document.getElementById("program").value = student.program;
-            document.getElementById("year").value = student.year;
-            document.getElementById("section").value = student.section;
-
-            document.getElementById("formTitle").textContent = "Edit Student Record";
-            document.getElementById("saveButton").textContent = "Update Record";
-
-            window.scrollTo({ top: 0, behavior: "smooth" });
-
-        } catch (error) {
-            alert(error.message);
-        }
-    }
-
-
-    // DELETE STUDENT
-    async function deleteStudent(id) {
-        if (!confirm("Are you sure you want to delete this record?")) {
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/students/${id}`, {
-                method: "DELETE"
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.error || "Unable to delete record.");
-            }
-
-            alert(result.message);
-
-            if (mySearchWasPerformed) {
-                await searchMyRecords();
-            }
-
-        } catch (error) {
-            alert(error.message);
-        }
-    }
-
-
-    // RETRIEVE CLASSMATE RECORDS
-    async function loadClassmateRecords() {
-        const table = document.getElementById("classmateRecords");
-
-        table.innerHTML = `
-            <tr><td colspan="7">Loading classmate records...</td></tr>
-        `;
-
-        document.getElementById("classmateDetails").style.display = "none";
-
-        try {
-            const response = await fetch("/api/classmate-students");
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || "Unable to retrieve classmate records.");
-            }
-
-            if (!Array.isArray(data)) {
-                throw new Error("Invalid classmate API response.");
-            }
-
-            classmateRecords = data;
-
-            // Reset the separate classmate search.
-            document.getElementById("classmateSearch").value = "";
-
-            displayClassmateRecords(classmateRecords);
-
-            showMessage(
-                "classmateMessage",
-                "Classmate records retrieved successfully.",
-                "success"
-            );
-
-        } catch (error) {
-            classmateRecords = [];
-
-            table.innerHTML = `
-                <tr><td colspan="7">${error.message}</td></tr>
-            `;
-
-            showMessage("classmateMessage", error.message, "error");
-        }
-    }
-
-
-    // DISPLAY CLASSMATE RECORDS
-    function displayClassmateRecords(records) {
-        const table = document.getElementById("classmateRecords");
-
-        table.innerHTML = "";
-
-        if (records.length === 0) {
-            table.innerHTML = `
-                <tr><td colspan="7">No matching classmate records found.</td></tr>
-            `;
-            return;
-        }
-
-        records.forEach(student => {
-            const row = document.createElement("tr");
-
-            const values = [
-                student.id,
-                student.student_id,
-                student.name,
-                student.program,
-                student.year,
-                student.section
-            ];
-
-            values.forEach(value => {
-                const cell = document.createElement("td");
-                cell.textContent = value ?? "";
-                row.appendChild(cell);
-            });
-
-            const actionCell = document.createElement("td");
-
-            const viewButton = document.createElement("button");
-            viewButton.textContent = "View Details";
-            viewButton.className = "details-button";
-            viewButton.type = "button";
-
-            viewButton.onclick = () => showClassmateDetails(student);
-
-            actionCell.appendChild(viewButton);
-            row.appendChild(actionCell);
-
-            table.appendChild(row);
-        });
-    }
-
-
-    // SEARCH CLASSMATE RECORDS
-    function searchClassmateRecords() {
-        if (classmateRecords.length === 0) {
-            showMessage(
-                "classmateMessage",
-                "Please retrieve classmate records first.",
-                "error"
-            );
-            return;
-        }
-
-        const searchValue = document.getElementById("classmateSearch")
-            .value.trim().toLowerCase();
-
-        if (!searchValue) {
-            displayClassmateRecords(classmateRecords);
-            return;
-        }
-
-        const filteredRecords = classmateRecords.filter(student => {
-            const studentId = String(student.student_id || "").toLowerCase();
-            const name = String(student.name || "").toLowerCase();
-
-            return studentId.includes(searchValue) ||
-                   name.includes(searchValue);
-        });
-
-        displayClassmateRecords(filteredRecords);
-    }
-
-
-    // CLEAR CLASSMATE SEARCH
-    function clearClassmateSearch() {
-        document.getElementById("classmateSearch").value = "";
-
-        if (classmateRecords.length === 0) {
-            document.getElementById("classmateRecords").innerHTML = `
-                <tr>
-                    <td colspan="7">Click Retrieve Classmate's Records to load records.</td>
-                </tr>
-            `;
-            return;
-        }
-
-        displayClassmateRecords(classmateRecords);
-    }
-
-
-    // VIEW CLASSMATE DETAILS
-    function showClassmateDetails(student) {
-        const details = document.getElementById("classmateDetails");
-
-        details.innerHTML = "";
-
-        const heading = document.createElement("h3");
-        heading.textContent = "Classmate Student Details";
-        details.appendChild(heading);
-
-        const fields = [
-            ["Database ID", student.id],
-            ["Student ID", student.student_id],
-            ["Name", student.name],
-            ["Program", student.program],
-            ["Year", student.year],
-            ["Section", student.section]
+        const values = [
+            student.id,
+            student.student_id,
+            student.name,
+            student.program,
+            student.year,
+            student.section,
+            student.source || "Local"
         ];
 
-        fields.forEach(([label, value]) => {
-            const paragraph = document.createElement("p");
-            paragraph.textContent = `${label}: ${value ?? ""}`;
-            details.appendChild(paragraph);
+        values.forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value ?? "";
+            row.appendChild(cell);
         });
 
-        details.style.display = "block";
+        const actions = document.createElement("td");
+
+        const viewButton = document.createElement("button");
+        viewButton.textContent = "View";
+        viewButton.className = "small-button";
+        viewButton.onclick = () => viewRecord(student);
+
+        const editButton = document.createElement("button");
+        editButton.textContent = "Edit";
+        editButton.className = "small-button secondary";
+        editButton.onclick = () => editRecord(student);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.className = "small-button danger";
+        deleteButton.onclick = () => deleteRecord(student.id);
+
+        actions.append(viewButton, editButton, deleteButton);
+        row.appendChild(actions);
+        tbody.appendChild(row);
+    });
+}
+
+
+function updateDashboard() {
+    const local = myRecords.filter(record =>
+        (record.source || "Local") === "Local"
+    ).length;
+
+    const imported = myRecords.filter(record =>
+        (record.source || "").toLowerCase().includes("classmate")
+    ).length;
+
+    document.getElementById("localCount").textContent = local;
+    document.getElementById("importedCount").textContent = imported;
+    document.getElementById("partnerCount").textContent = partnerRecords.length;
+}
+
+
+function viewRecord(student) {
+    alert(
+        "Student ID: " + student.student_id +
+        "\nName: " + student.name +
+        "\nProgram: " + student.program +
+        "\nYear: " + student.year +
+        "\nSection: " + student.section +
+        "\nSource: " + (student.source || "Local")
+    );
+}
+
+
+function editRecord(student) {
+    document.getElementById("recordId").value = student.id;
+    document.getElementById("student_id").value = student.student_id;
+    document.getElementById("name").value = student.name;
+    document.getElementById("program").value = student.program;
+    document.getElementById("year").value = student.year;
+    document.getElementById("section").value = student.section;
+
+    document.getElementById("submitButton").textContent = "Update Record";
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+
+function resetForm() {
+    document.getElementById("studentForm").reset();
+    document.getElementById("recordId").value = "";
+    document.getElementById("submitButton").textContent = "Add Local Record";
+}
+
+
+document.getElementById("studentForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const recordId = document.getElementById("recordId").value;
+
+    const data = {
+        student_id: document.getElementById("student_id").value,
+        name: document.getElementById("name").value,
+        program: document.getElementById("program").value,
+        year: document.getElementById("year").value,
+        section: document.getElementById("section").value,
+        source: "Local"
+    };
+
+    const url = recordId
+        ? `/api/students/${recordId}`
+        : "/api/students";
+
+    const method = recordId ? "PUT" : "POST";
+
+    const response = await fetch(url, {
+        method: method,
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    document.getElementById("formMessage").textContent =
+        result.message || result.error;
+
+    if (response.ok) {
+        resetForm();
+        loadMyRecords();
+    }
+});
+
+
+async function deleteRecord(id) {
+    if (!confirm("Are you sure you want to delete this record?")) {
+        return;
     }
 
-
-    // ENTER KEY SUPPORT FOR BOTH SEARCH BARS
-    document.getElementById("mySearch").addEventListener("keydown", function(event) {
-        if (event.key === "Enter") {
-            searchMyRecords();
-        }
+    const response = await fetch(`/api/students/${id}`, {
+        method: "DELETE"
     });
 
-    document.getElementById("classmateSearch").addEventListener("keydown", function(event) {
-        if (event.key === "Enter") {
-            searchClassmateRecords();
+    const result = await response.json();
+    alert(result.message || result.error);
+
+    loadMyRecords();
+}
+
+
+async function loadPartnerRecords() {
+    const message = document.getElementById("partnerMessage");
+    message.textContent = "Retrieving partner records...";
+
+    try {
+        const response = await fetch("/partner-records");
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || "Unable to retrieve records.");
         }
+
+        partnerRecords = result;
+        displayPartnerRecords();
+        updateDashboard();
+
+        message.textContent = partnerRecords.length + " partner record(s) retrieved.";
+    } catch (error) {
+        message.textContent = error.message;
+        partnerRecords = [];
+        displayPartnerRecords();
+        updateDashboard();
+    }
+}
+
+
+function displayPartnerRecords() {
+    const search = document.getElementById("partnerSearch").value.toLowerCase();
+    const tbody = document.getElementById("partnerRecordsBody");
+
+    tbody.innerHTML = "";
+
+    const filtered = partnerRecords.filter(student =>
+        Object.values(student).some(value =>
+            String(value ?? "").toLowerCase().includes(search)
+        )
+    );
+
+    filtered.forEach(student => {
+        const row = document.createElement("tr");
+
+        [
+            student.student_id,
+            student.name,
+            student.program,
+            student.year,
+            student.section
+        ].forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value ?? "";
+            row.appendChild(cell);
+        });
+
+        const actions = document.createElement("td");
+
+        const viewButton = document.createElement("button");
+        viewButton.textContent = "View";
+        viewButton.className = "small-button";
+        viewButton.onclick = () => viewRecord(student);
+
+        const saveButton = document.createElement("button");
+        saveButton.textContent = "Save";
+        saveButton.className = "small-button";
+        saveButton.onclick = () => importStudent(student);
+
+        actions.append(viewButton, saveButton);
+        row.appendChild(actions);
+        tbody.appendChild(row);
+    });
+}
+
+
+async function importStudent(student) {
+    const response = await fetch("/import-student", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(student)
     });
 
+    const result = await response.json();
+
+    alert(result.message || result.error);
+
+    if (response.ok) {
+        loadMyRecords();
+    }
+}
+
+
+document.getElementById("sendForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const data = {
+        student_id: document.getElementById("send_student_id").value,
+        name: document.getElementById("send_name").value,
+        program: document.getElementById("send_program").value,
+        year: document.getElementById("send_year").value,
+        section: document.getElementById("send_section").value,
+        source: "Partner API"
+    };
+
+    const response = await fetch("/send-to-partner", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+
+    document.getElementById("sendMessage").textContent =
+        result.message || result.error;
+
+    if (response.ok) {
+        document.getElementById("sendForm").reset();
+    }
+});
+
+
+loadMyRecords();
 </script>
 
 </body>

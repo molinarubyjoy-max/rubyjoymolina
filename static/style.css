@@ -1,0 +1,173 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f2f5fa;
+    color: #263445;
+}
+
+header {
+    background: #142d4e;
+    color: white;
+    padding: 28px 5%;
+}
+
+header h1 {
+    margin-bottom: 8px;
+}
+
+header p {
+    color: #d7e5f5;
+}
+
+main {
+    width: 92%;
+    max-width: 1400px;
+    margin: 25px auto;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.stat-card {
+    background: white;
+    padding: 22px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px #00000010;
+    border-left: 5px solid #168b9b;
+}
+
+.stat-card h3 {
+    font-size: 15px;
+    color: #64748b;
+}
+
+.stat-card p {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #142d4e;
+}
+
+.panel {
+    background: white;
+    padding: 24px;
+    margin-bottom: 22px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px #00000010;
+}
+
+.panel h2 {
+    color: #142d4e;
+    margin-bottom: 18px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+input {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #168b9b;
+}
+
+button {
+    background: #168b9b;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 3px;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+.secondary {
+    background: #64748b;
+}
+
+.danger {
+    background: #dc3545;
+}
+
+.small-button {
+    padding: 7px 10px;
+    font-size: 12px;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    min-width: 750px;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+    font-size: 14px;
+}
+
+th {
+    background: #142d4e;
+    color: white;
+}
+
+tr:hover {
+    background: #f1f7fa;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.message {
+    margin-top: 12px;
+    color: #168b9b;
+}
+
+@media (max-width: 700px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .panel {
+        padding: 15px;
+    }
+}
