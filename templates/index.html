@@ -1,476 +1,853 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Student API Interface</title>
+    <title>Laboratory Activity 8 - Student Records</title>
 
     <style>
-        body {
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 35px auto;
-            padding: 20px;
-            background: #f2f5fa;
-            color: #222;
         }
 
-        h1 {
-            text-align: center;
-            color: #17365d;
+        body {
+            background: #f3f6fb;
+            color: #26364a;
+            padding: 25px;
         }
 
-        h2 {
-            color: #245a91;
-            margin-top: 0;
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #102d50, #245b89);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            margin-bottom: 8px;
         }
 
         .section {
             background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+        }
+
+        .section h2 {
+            color: #173b65;
+            margin-bottom: 12px;
+        }
+
+        .section-description {
+            color: #64748b;
+            margin-bottom: 18px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd5df;
+            border-radius: 7px;
+            font-size: 14px;
         }
 
         button {
-            padding: 10px 15px;
-            margin: 5px 3px 5px 0;
-            background: #245a91;
-            color: white;
             border: none;
-            border-radius: 5px;
+            padding: 11px 17px;
+            border-radius: 7px;
             cursor: pointer;
+            font-weight: bold;
+            background: #173f6b;
+            color: white;
         }
 
         button:hover {
-            background: #17365d;
+            opacity: 0.88;
         }
 
-        input {
-            padding: 10px;
-            max-width: 100%;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            flex-wrap: wrap;
         }
 
-        .result {
+        .secondary {
+            background: #64748b;
+        }
+
+        .danger {
+            background: #dc3545;
+        }
+
+        .edit-button {
+            background: #e5a000;
+            color: #222;
+            padding: 8px 10px;
+        }
+
+        .details-button {
+            background: #16806a;
+            padding: 8px 10px;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .search-container input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th, td {
+            padding: 13px;
+            border-bottom: 1px solid #e1e7ee;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background: #173b65;
+            color: white;
+        }
+
+        tr:hover td {
+            background: #f6f9fc;
+        }
+
+        .message {
             margin-top: 15px;
             padding: 12px;
-            background: #eef4fa;
-            border-radius: 5px;
-            overflow-wrap: anywhere;
-        }
-
-        .result:empty {
+            border-radius: 7px;
             display: none;
         }
 
-        .student-card {
-            background: white;
-            border: 1px solid #d5dfeb;
-            border-radius: 6px;
-            padding: 12px;
-            margin: 10px 0;
+        .success {
+            display: block;
+            background: #d9f5e7;
+            color: #17643c;
         }
 
-        .student-card p {
-            margin: 6px 0;
+        .error {
+            display: block;
+            background: #ffe0e0;
+            color: #9b2020;
         }
 
-        footer {
-            text-align: center;
-            color: #666;
-            font-size: 13px;
-            margin-top: 25px;
+        #classmateDetails {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f3f6fb;
+            border-radius: 8px;
+            display: none;
+        }
+
+        #classmateDetails h3 {
+            margin-bottom: 12px;
+            color: #173b65;
+        }
+
+        #classmateDetails p {
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 12px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 16px;
+            }
+
+            .search-container button {
+                flex: 1;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <h1>Student API Interface</h1>
+<div class="container">
 
-    <!-- Student Information -->
-    <div class="section">
-        <h2>Student Information</h2>
+    <header>
+        <h1>Student Records Management System</h1>
+        <p>Laboratory Activity 8: CRUD Web Application and Retrieving Data from Another Student's API</p>
+    </header>
 
-        <button onclick="loadStudent()">
-            Load Student Information
+    <!-- ADD / EDIT STUDENT -->
+    <section class="section">
+        <h2 id="formTitle">Add Student Record</h2>
+        <p class="section-description">
+            Enter the student information below.
+        </p>
+
+        <form id="studentForm">
+
+            <input type="hidden" id="recordId">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="studentId">Student ID</label>
+                    <input type="text" id="studentId"
+                           placeholder="Example: 2026-00150" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="studentName">Name</label>
+                    <input type="text" id="studentName"
+                           placeholder="Enter full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="program">Program</label>
+                    <input type="text" id="program"
+                           placeholder="Example: BSIT" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="year">Year</label>
+                    <select id="year" required>
+                        <option value="">Select Year</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="section">Section</label>
+                    <input type="text" id="section"
+                           placeholder="Example: A" required>
+                </div>
+
+            </div>
+
+            <div class="button-row">
+                <button type="submit" id="saveButton">Add Record</button>
+                <button type="button" class="secondary"
+                        onclick="resetForm()">Cancel / Clear Form</button>
+            </div>
+
+            <div id="formMessage" class="message"></div>
+        </form>
+    </section>
+
+
+    <!-- MY RECORDS -->
+    <section class="section">
+
+        <h2>My Records</h2>
+
+        <p class="section-description">
+            Search and manage your own student records.
+        </p>
+
+        <div class="search-container">
+
+            <input type="text" id="mySearch"
+                   placeholder="Search by Student ID or Name...">
+
+            <button type="button" onclick="searchMyRecords()">
+                Search
+            </button>
+
+            <button type="button" class="secondary"
+                    onclick="clearMySearch()">
+                Clear
+            </button>
+
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Program</th>
+                        <th>Year</th>
+                        <th>Section</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="myRecords">
+                    <tr>
+                        <td colspan="7">
+                            Search for a student to display records.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+
+
+    <!-- CLASSMATE RECORDS -->
+    <section class="section">
+
+        <h2>Classmate's Records</h2>
+
+        <p class="section-description">
+            Retrieve and search records from your classmate's deployed API.
+            These records are read-only.
+        </p>
+
+        <button type="button" onclick="loadClassmateRecords()">
+            Retrieve Classmate's Records
         </button>
 
-        <div id="studentResult" class="result"></div>
-    </div>
+        <!-- SEPARATE CLASSMATE SEARCH BAR -->
+        <div class="search-container">
+
+            <input
+                type="text"
+                id="classmateSearch"
+                placeholder="Search classmate by Student ID or Name..."
+            >
+
+            <button type="button" onclick="searchClassmateRecords()">
+                Search
+            </button>
+
+            <button type="button" class="secondary"
+                    onclick="clearClassmateSearch()">
+                Clear
+            </button>
+
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Program</th>
+                        <th>Year</th>
+                        <th>Section</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="classmateRecords">
+                    <tr>
+                        <td colspan="7">
+                            Click Retrieve Classmate's Records to load records.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="classmateDetails"></div>
+
+        <div id="classmateMessage" class="message"></div>
+
+    </section>
+
+</div>
 
 
-    <!-- Greeting API -->
-    <div class="section">
-        <h2>Greeting API</h2>
+<script>
+    // Store the retrieved classmate records in memory.
+    let classmateRecords = [];
 
-        <input
-            type="text"
-            id="nameInput"
-            placeholder="Enter your first name"
-        >
-
-        <button onclick="sayHello()">Say Hello</button>
-
-        <p id="greeting"></p>
-    </div>
+    let mySearchWasPerformed = false;
 
 
-    <!-- Campus Information -->
-    <div class="section">
-        <h2>Campus Information</h2>
+    // SHOW MESSAGE
+    function showMessage(elementId, message, type) {
+        const element = document.getElementById(elementId);
 
-        <button onclick="loadCampus()">
-            Load Campus Information
-        </button>
-
-        <div id="campusResult" class="result"></div>
-    </div>
+        element.textContent = message;
+        element.className = "message " + type;
+    }
 
 
-    <!-- Grade Calculator -->
-    <div class="section">
-        <h2>Grade Calculator</h2>
+    // RESET FORM
+    function resetForm() {
+        document.getElementById("studentForm").reset();
+        document.getElementById("recordId").value = "";
+        document.getElementById("formTitle").textContent = "Add Student Record";
+        document.getElementById("saveButton").textContent = "Add Record";
 
-        <input
-            type="number"
-            id="scoreInput"
-            placeholder="Enter score (0-100)"
-            min="0"
-            max="100"
-            step="any"
-        >
-
-        <button onclick="calculateGrade()">
-            Calculate Grade
-        </button>
-
-        <div id="gradeResult" class="result"></div>
-    </div>
+        const message = document.getElementById("formMessage");
+        message.className = "message";
+        message.textContent = "";
+    }
 
 
-    <!-- Activity 7: All Database Students -->
-    <div class="section">
-        <h2>Students from Database</h2>
+    // SEARCH MY RECORDS
+    async function searchMyRecords() {
+        const searchValue = document.getElementById("mySearch")
+            .value.trim().toLowerCase();
 
-        <p>Display all student records stored in SQLite.</p>
+        const table = document.getElementById("myRecords");
 
-        <button onclick="loadStudents()">Load Students</button>
-
-        <div id="studentList" class="result"></div>
-    </div>
-
-
-    <!-- Additional Task: Search by Year Level -->
-    <div class="section">
-        <h2>Search Students by Year Level</h2>
-
-        <p>Enter a year level to find matching students.</p>
-
-        <input
-            type="number"
-            id="yearInput"
-            placeholder="Enter year level (1-4)"
-            min="1"
-            max="4"
-        >
-
-        <button onclick="loadStudentsByYear()">
-            Search Year Level
-        </button>
-
-        <div id="yearResult" class="result"></div>
-    </div>
-
-
-    <footer>
-        Laboratory Activities 6 and 7 - Flask API Web Interface
-    </footer>
-
-
-    <script>
-
-        // Student Information API
-        function loadStudent() {
-            fetch('/student')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Request failed');
-                    }
-
-                    return response.json();
-                })
-                .then(data => {
-                    const result =
-                        document.getElementById('studentResult');
-
-                    result.replaceChildren();
-
-                    const fields = [
-                        ['Student ID', data.student_id],
-                        ['Name', data.name],
-                        ['Program', data.program],
-                        ['Year', data.year],
-                        ['Section', data.section]
-                    ];
-
-                    fields.forEach(([label, value]) => {
-                        const p = document.createElement('p');
-                        const b = document.createElement('b');
-
-                        b.textContent = label + ': ';
-                        p.appendChild(b);
-                        p.appendChild(
-                            document.createTextNode(value)
-                        );
-
-                        result.appendChild(p);
-                    });
-                })
-                .catch(() => {
-                    document.getElementById('studentResult')
-                        .textContent =
-                        'Unable to retrieve student information.';
-                });
+        if (!searchValue) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="7">Please enter a Student ID or Name.</td>
+                </tr>
+            `;
+            mySearchWasPerformed = false;
+            return;
         }
 
+        mySearchWasPerformed = true;
 
-        // Greeting API
-        function sayHello() {
-            const name =
-                document.getElementById('nameInput').value.trim();
+        table.innerHTML = `
+            <tr><td colspan="7">Searching...</td></tr>
+        `;
 
-            const greeting =
-                document.getElementById('greeting');
+        try {
+            const response = await fetch("/api/students");
 
-            if (!name) {
-                greeting.textContent =
-                    'Please enter your first name.';
-                return;
+            if (!response.ok) {
+                throw new Error("Unable to retrieve your records.");
             }
 
-            fetch('/hello?name=' + encodeURIComponent(name))
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Request failed');
-                    }
+            const records = await response.json();
 
-                    return response.json();
-                })
-                .then(data => {
-                    greeting.textContent = data.message;
-                })
-                .catch(() => {
-                    greeting.textContent =
-                        'Unable to retrieve greeting.';
-                });
+            const filtered = records.filter(student => {
+                const id = String(student.student_id || "").toLowerCase();
+                const name = String(student.name || "").toLowerCase();
+
+                return id.includes(searchValue) ||
+                       name.includes(searchValue);
+            });
+
+            displayMyRecords(filtered);
+
+        } catch (error) {
+            table.innerHTML = `
+                <tr><td colspan="7">${error.message}</td></tr>
+            `;
+        }
+    }
+
+
+    // DISPLAY MY RECORDS
+    function displayMyRecords(records) {
+        const table = document.getElementById("myRecords");
+
+        table.innerHTML = "";
+
+        if (records.length === 0) {
+            table.innerHTML = `
+                <tr><td colspan="7">No matching records found.</td></tr>
+            `;
+            return;
         }
 
+        records.forEach(student => {
+            const row = document.createElement("tr");
 
-        // Campus Information API
-        function loadCampus() {
-            fetch('/campus')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Request failed');
-                    }
+            const values = [
+                student.id,
+                student.student_id,
+                student.name,
+                student.program,
+                student.year,
+                student.section
+            ];
 
-                    return response.json();
-                })
-                .then(data => {
-                    const result =
-                        document.getElementById('campusResult');
+            values.forEach(value => {
+                const cell = document.createElement("td");
+                cell.textContent = value ?? "";
+                row.appendChild(cell);
+            });
 
-                    result.replaceChildren();
+            const actionCell = document.createElement("td");
 
-                    Object.entries(data).forEach(([label, value]) => {
-                        const p = document.createElement('p');
-                        const b = document.createElement('b');
+            const editButton = document.createElement("button");
+            editButton.textContent = "Edit";
+            editButton.className = "edit-button";
+            editButton.type = "button";
+            editButton.onclick = () => editStudent(student.id);
 
-                        b.textContent = label + ': ';
-                        p.appendChild(b);
-                        p.appendChild(
-                            document.createTextNode(value)
-                        );
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = "Delete";
+            deleteButton.className = "danger";
+            deleteButton.type = "button";
+            deleteButton.style.marginLeft = "5px";
+            deleteButton.onclick = () => deleteStudent(student.id);
 
-                        result.appendChild(p);
-                    });
-                })
-                .catch(() => {
-                    document.getElementById('campusResult')
-                        .textContent =
-                        'Unable to retrieve campus information.';
+            actionCell.appendChild(editButton);
+            actionCell.appendChild(deleteButton);
+
+            row.appendChild(actionCell);
+            table.appendChild(row);
+        });
+    }
+
+
+    // CLEAR MY SEARCH
+    function clearMySearch() {
+        document.getElementById("mySearch").value = "";
+
+        mySearchWasPerformed = false;
+
+        document.getElementById("myRecords").innerHTML = `
+            <tr>
+                <td colspan="7">Search for a student to display records.</td>
+            </tr>
+        `;
+    }
+
+
+    // ADD OR UPDATE STUDENT
+    document.getElementById("studentForm").addEventListener("submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            const recordId = document.getElementById("recordId").value;
+
+            const student = {
+                student_id: document.getElementById("studentId").value.trim(),
+                name: document.getElementById("studentName").value.trim(),
+                program: document.getElementById("program").value.trim(),
+                year: document.getElementById("year").value,
+                section: document.getElementById("section").value.trim()
+            };
+
+            const url = recordId
+                ? `/api/students/${recordId}`
+                : "/api/students";
+
+            const method = recordId ? "PUT" : "POST";
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(student)
                 });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || "Unable to save record.");
+                }
+
+                showMessage("formMessage", result.message, "success");
+
+                resetForm();
+
+                if (mySearchWasPerformed) {
+                    await searchMyRecords();
+                }
+
+            } catch (error) {
+                showMessage("formMessage", error.message, "error");
+            }
         }
+    );
 
 
-        // Grade Calculator API
-        function calculateGrade() {
-            const score =
-                document.getElementById('scoreInput').value;
+    // EDIT STUDENT
+    async function editStudent(id) {
+        try {
+            const response = await fetch(`/api/students/${id}`);
 
-            const result =
-                document.getElementById('gradeResult');
-
-            if (score.trim() === '') {
-                result.textContent = 'Please enter a score.';
-                return;
+            if (!response.ok) {
+                throw new Error("Unable to find student.");
             }
 
-            fetch('/grade?score=' + encodeURIComponent(score))
-                .then(async response => {
-                    const data = await response.json();
+            const student = await response.json();
 
-                    if (!response.ok) {
-                        throw new Error(
-                            data.error || 'Unable to calculate grade.'
-                        );
-                    }
+            document.getElementById("recordId").value = student.id;
+            document.getElementById("studentId").value = student.student_id;
+            document.getElementById("studentName").value = student.name;
+            document.getElementById("program").value = student.program;
+            document.getElementById("year").value = student.year;
+            document.getElementById("section").value = student.section;
 
-                    return data;
-                })
-                .then(data => {
-                    result.textContent =
-                        'Score: ' + data.score +
-                        ' | Remark: ' + data.remark;
-                })
-                .catch(error => {
-                    result.textContent = error.message;
-                });
+            document.getElementById("formTitle").textContent = "Edit Student Record";
+            document.getElementById("saveButton").textContent = "Update Record";
+
+            window.scrollTo({ top: 0, behavior: "smooth" });
+
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+
+    // DELETE STUDENT
+    async function deleteStudent(id) {
+        if (!confirm("Are you sure you want to delete this record?")) {
+            return;
         }
 
+        try {
+            const response = await fetch(`/api/students/${id}`, {
+                method: "DELETE"
+            });
 
-        // Activity 7: Load all students from SQLite
-        function loadStudents() {
-            const list =
-                document.getElementById('studentList');
+            const result = await response.json();
 
-            list.textContent = 'Loading student records...';
-
-            fetch('/students')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Request failed');
-                    }
-
-                    return response.json();
-                })
-                .then(data => {
-                    list.replaceChildren();
-
-                    if (data.length === 0) {
-                        list.textContent =
-                            'No student records found.';
-                        return;
-                    }
-
-                    data.forEach(student => {
-                        const card =
-                            document.createElement('div');
-
-                        card.className = 'student-card';
-
-                        const fields = [
-                            ['Database ID', student.id],
-                            ['Student ID', student.student_id],
-                            ['Name', student.name],
-                            ['Program', student.program],
-                            ['Year', student.year],
-                            ['Section', student.section]
-                        ];
-
-                        fields.forEach(([label, value]) => {
-                            const p = document.createElement('p');
-                            const b = document.createElement('b');
-
-                            b.textContent = label + ': ';
-                            p.appendChild(b);
-                            p.appendChild(
-                                document.createTextNode(value)
-                            );
-
-                            card.appendChild(p);
-                        });
-
-                        list.appendChild(card);
-                    });
-                })
-                .catch(() => {
-                    list.textContent =
-                        'Unable to retrieve student records.';
-                });
-        }
-
-
-        // Additional Task: Search students by year level
-        function loadStudentsByYear() {
-            const year =
-                document.getElementById('yearInput').value;
-
-            const result =
-                document.getElementById('yearResult');
-
-            if (
-                year === '' ||
-                Number(year) < 1 ||
-                Number(year) > 4 ||
-                !Number.isInteger(Number(year))
-            ) {
-                result.textContent =
-                    'Please enter a year level from 1 to 4.';
-                return;
+            if (!response.ok) {
+                throw new Error(result.error || "Unable to delete record.");
             }
 
-            result.textContent = 'Searching database...';
+            alert(result.message);
 
-            fetch('/students/year/' + encodeURIComponent(year))
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Request failed');
-                    }
+            if (mySearchWasPerformed) {
+                await searchMyRecords();
+            }
 
-                    return response.json();
-                })
-                .then(data => {
-                    result.replaceChildren();
+        } catch (error) {
+            alert(error.message);
+        }
+    }
 
-                    if (data.length === 0) {
-                        result.textContent =
-                            'No students found for this year level.';
-                        return;
-                    }
 
-                    data.forEach(student => {
-                        const card =
-                            document.createElement('div');
+    // RETRIEVE CLASSMATE RECORDS
+    async function loadClassmateRecords() {
+        const table = document.getElementById("classmateRecords");
 
-                        card.className = 'student-card';
+        table.innerHTML = `
+            <tr><td colspan="7">Loading classmate records...</td></tr>
+        `;
 
-                        const p = document.createElement('p');
+        document.getElementById("classmateDetails").style.display = "none";
 
-                        p.textContent =
-                            student.student_id + ' - ' +
-                            student.name + ' | ' +
-                            student.program + ' | Year ' +
-                            student.year + ' | Section ' +
-                            student.section;
+        try {
+            const response = await fetch("/api/classmate-students");
 
-                        card.appendChild(p);
-                        result.appendChild(card);
-                    });
-                })
-                .catch(() => {
-                    result.textContent =
-                        'Unable to retrieve student records.';
-                });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Unable to retrieve classmate records.");
+            }
+
+            if (!Array.isArray(data)) {
+                throw new Error("Invalid classmate API response.");
+            }
+
+            classmateRecords = data;
+
+            // Reset the separate classmate search.
+            document.getElementById("classmateSearch").value = "";
+
+            displayClassmateRecords(classmateRecords);
+
+            showMessage(
+                "classmateMessage",
+                "Classmate records retrieved successfully.",
+                "success"
+            );
+
+        } catch (error) {
+            classmateRecords = [];
+
+            table.innerHTML = `
+                <tr><td colspan="7">${error.message}</td></tr>
+            `;
+
+            showMessage("classmateMessage", error.message, "error");
+        }
+    }
+
+
+    // DISPLAY CLASSMATE RECORDS
+    function displayClassmateRecords(records) {
+        const table = document.getElementById("classmateRecords");
+
+        table.innerHTML = "";
+
+        if (records.length === 0) {
+            table.innerHTML = `
+                <tr><td colspan="7">No matching classmate records found.</td></tr>
+            `;
+            return;
         }
 
-    </script>
+        records.forEach(student => {
+            const row = document.createElement("tr");
+
+            const values = [
+                student.id,
+                student.student_id,
+                student.name,
+                student.program,
+                student.year,
+                student.section
+            ];
+
+            values.forEach(value => {
+                const cell = document.createElement("td");
+                cell.textContent = value ?? "";
+                row.appendChild(cell);
+            });
+
+            const actionCell = document.createElement("td");
+
+            const viewButton = document.createElement("button");
+            viewButton.textContent = "View Details";
+            viewButton.className = "details-button";
+            viewButton.type = "button";
+
+            viewButton.onclick = () => showClassmateDetails(student);
+
+            actionCell.appendChild(viewButton);
+            row.appendChild(actionCell);
+
+            table.appendChild(row);
+        });
+    }
+
+
+    // SEARCH CLASSMATE RECORDS
+    function searchClassmateRecords() {
+        if (classmateRecords.length === 0) {
+            showMessage(
+                "classmateMessage",
+                "Please retrieve classmate records first.",
+                "error"
+            );
+            return;
+        }
+
+        const searchValue = document.getElementById("classmateSearch")
+            .value.trim().toLowerCase();
+
+        if (!searchValue) {
+            displayClassmateRecords(classmateRecords);
+            return;
+        }
+
+        const filteredRecords = classmateRecords.filter(student => {
+            const studentId = String(student.student_id || "").toLowerCase();
+            const name = String(student.name || "").toLowerCase();
+
+            return studentId.includes(searchValue) ||
+                   name.includes(searchValue);
+        });
+
+        displayClassmateRecords(filteredRecords);
+    }
+
+
+    // CLEAR CLASSMATE SEARCH
+    function clearClassmateSearch() {
+        document.getElementById("classmateSearch").value = "";
+
+        if (classmateRecords.length === 0) {
+            document.getElementById("classmateRecords").innerHTML = `
+                <tr>
+                    <td colspan="7">Click Retrieve Classmate's Records to load records.</td>
+                </tr>
+            `;
+            return;
+        }
+
+        displayClassmateRecords(classmateRecords);
+    }
+
+
+    // VIEW CLASSMATE DETAILS
+    function showClassmateDetails(student) {
+        const details = document.getElementById("classmateDetails");
+
+        details.innerHTML = "";
+
+        const heading = document.createElement("h3");
+        heading.textContent = "Classmate Student Details";
+        details.appendChild(heading);
+
+        const fields = [
+            ["Database ID", student.id],
+            ["Student ID", student.student_id],
+            ["Name", student.name],
+            ["Program", student.program],
+            ["Year", student.year],
+            ["Section", student.section]
+        ];
+
+        fields.forEach(([label, value]) => {
+            const paragraph = document.createElement("p");
+            paragraph.textContent = `${label}: ${value ?? ""}`;
+            details.appendChild(paragraph);
+        });
+
+        details.style.display = "block";
+    }
+
+
+    // ENTER KEY SUPPORT FOR BOTH SEARCH BARS
+    document.getElementById("mySearch").addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            searchMyRecords();
+        }
+    });
+
+    document.getElementById("classmateSearch").addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            searchClassmateRecords();
+        }
+    });
+
+</script>
 
 </body>
 </html>
