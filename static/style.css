@@ -1,173 +1,220 @@
+
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
 }
 
 body {
-    background: #f2f5fa;
-    color: #263445;
+    font-family: Arial, sans-serif;
+    background: #f4f6fa;
+    margin: 0;
+    padding: 25px;
+    color: #263449;
 }
 
-header {
-    background: #142d4e;
-    color: white;
-    padding: 28px 5%;
+.container {
+    max-width: 1250px;
+    margin: auto;
 }
 
-header h1 {
-    margin-bottom: 8px;
+h1 {
+    color: #17365d;
 }
 
-header p {
-    color: #d7e5f5;
+section {
+    background: white;
+    padding: 22px;
+    margin: 22px 0;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
 }
 
-main {
-    width: 92%;
-    max-width: 1400px;
-    margin: 25px auto;
-}
-
-.dashboard {
+.cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 18px;
-    margin-bottom: 22px;
 }
 
-.stat-card {
-    background: white;
+.card {
+    background: #17365d;
+    color: white;
     padding: 22px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px #00000010;
-    border-left: 5px solid #168b9b;
+    border-radius: 12px;
+    text-align: center;
 }
 
-.stat-card h3 {
-    font-size: 15px;
-    color: #64748b;
-}
-
-.stat-card p {
+.card h2 {
     font-size: 30px;
-    font-weight: bold;
-    margin-top: 10px;
-    color: #142d4e;
-}
-
-.panel {
-    background: white;
-    padding: 24px;
-    margin-bottom: 22px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px #00000010;
-}
-
-.panel h2 {
-    color: #142d4e;
-    margin-bottom: 18px;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 15px;
 }
 
 input {
+    display: block;
     width: 100%;
-    padding: 11px;
-    border: 1px solid #cbd5e1;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
     border-radius: 6px;
-    margin-bottom: 12px;
-    outline: none;
-}
-
-input:focus {
-    border-color: #168b9b;
 }
 
 button {
-    background: #168b9b;
+    background: #176b87;
     color: white;
+    padding: 10px 15px;
     border: none;
-    padding: 10px 16px;
     border-radius: 6px;
+    margin: 4px;
     cursor: pointer;
-    margin: 3px;
 }
 
 button:hover {
-    opacity: 0.85;
-}
-
-.secondary {
-    background: #64748b;
-}
-
-.danger {
-    background: #dc3545;
-}
-
-.small-button {
-    padding: 7px 10px;
-    font-size: 12px;
-}
-
-.table-wrapper {
-    width: 100%;
-    overflow-x: auto;
+    background: #104e68;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 12px;
-    min-width: 750px;
+    margin-top: 15px;
 }
 
 th, td {
-    padding: 12px;
-    border-bottom: 1px solid #e2e8f0;
+    border: 1px solid #ddd;
+    padding: 11px;
     text-align: left;
-    font-size: 14px;
 }
 
 th {
-    background: #142d4e;
+    background: #17365d;
     color: white;
 }
 
-tr:hover {
-    background: #f1f7fa;
+tr:nth-child(even) {
+    background: #f2f5f9;
 }
 
-.section-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+.table-container {
+    overflow-x: auto;
 }
 
-.message {
-    margin-top: 12px;
-    color: #168b9b;
+pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
 }
 
 @media (max-width: 700px) {
-    .dashboard {
+    .cards {
         grid-template-columns: 1fr;
     }
 
-    .form-grid {
+    body {
+        padding: 10px;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6fa;
+    margin: 0;
+    padding: 25px;
+    color: #263449;
+}
+
+.container {
+    max-width: 1250px;
+    margin: auto;
+}
+
+h1 {
+    color: #17365d;
+}
+
+section {
+    background: white;
+    padding: 22px;
+    margin: 22px 0;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.card {
+    background: #17365d;
+    color: white;
+    padding: 22px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.card h2 {
+    font-size: 30px;
+}
+
+input {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+button {
+    background: #176b87;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    margin: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #104e68;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 11px;
+    text-align: left;
+}
+
+th {
+    background: #17365d;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background: #f2f5f9;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+    .cards {
         grid-template-columns: 1fr;
     }
 
-    .panel {
-        padding: 15px;
+    body {
+        padding: 10px;
     }
 }

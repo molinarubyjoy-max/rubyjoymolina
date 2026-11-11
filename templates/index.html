@@ -1,63 +1,92 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Records - Laboratory Activity 9</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <title>Student Integration Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
 
-<header>
-    <h1>Student Records Management</h1>
-    <p>Laboratory Activity 9: System-to-System Integration</p>
-</header>
+<div class="container">
 
-<main>
-    <section class="dashboard">
-        <div class="stat-card">
-            <h3>My Local Records</h3>
-            <p id="localCount">0</p>
+    <h1>Student Integration Dashboard</h1>
+    <p>System-to-System Integration</p>
+
+    <!-- DASHBOARD COUNTS -->
+
+    <div class="cards">
+
+        <div class="card">
+            <h2 id="localCount">0</h2>
+            <p>My Local Records</p>
         </div>
 
-        <div class="stat-card">
-            <h3>Imported Records</h3>
-            <p id="importedCount">0</p>
+        <div class="card">
+            <h2 id="importedCount">0</h2>
+            <p>Imported Records</p>
         </div>
 
-        <div class="stat-card">
-            <h3>Partner Records</h3>
-            <p id="partnerCount">0</p>
+        <div class="card">
+            <h2 id="partnerCount">0</h2>
+            <p>Partner Records</p>
         </div>
-    </section>
 
-    <section class="panel">
-        <h2>Add Student Record</h2>
+    </div>
+
+
+    <!-- ADD STUDENT -->
+
+    <section>
+
+        <h2>Add Student</h2>
 
         <form id="studentForm">
-            <input type="hidden" id="recordId">
 
-            <div class="form-grid">
-                <input type="text" id="student_id" placeholder="Student ID" required>
-                <input type="text" id="name" placeholder="Full Name" required>
-                <input type="text" id="program" placeholder="Program / Course" required>
-                <input type="number" id="year" placeholder="Year Level" min="1" max="6" required>
-                <input type="text" id="section" placeholder="Section" required>
-            </div>
+            <input name="student_id"
+                   placeholder="Student ID" required>
 
-            <button type="submit" id="submitButton">Add Local Record</button>
-            <button type="button" class="secondary" onclick="resetForm()">Clear</button>
+            <input name="name"
+                   placeholder="Full Name" required>
+
+            <input name="program"
+                   placeholder="Program" required>
+
+            <input name="year"
+                   type="number"
+                   min="1"
+                   placeholder="Year" required>
+
+            <input name="section"
+                   placeholder="Section" required>
+
+            <button type="submit">Add Student</button>
+
         </form>
 
-        <p id="formMessage" class="message"></p>
     </section>
 
-    <section class="panel">
-        <h2>My Records</h2>
-        <input type="text" id="mySearch" placeholder="Search my records..." oninput="displayMyRecords()">
 
-        <div class="table-wrapper">
+    <!-- MY RECORDS -->
+
+    <section>
+
+        <h2>My Records</h2>
+
+        <button onclick="loadMyRecords()">
+            Refresh My Records
+        </button>
+
+        <div class="table-container">
+
             <table>
+
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -70,23 +99,30 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="myRecordsBody"></tbody>
+
+                <tbody id="myRecords"></tbody>
+
             </table>
+
         </div>
+
     </section>
 
-    <section class="panel">
-        <div class="section-heading">
-            <h2>Partner Records</h2>
-            <button type="button" onclick="loadPartnerRecords()">Retrieve Partner Records</button>
-        </div>
 
-        <input type="text" id="partnerSearch" placeholder="Search partner records..." oninput="displayPartnerRecords()">
+    <!-- PARTNER RECORDS -->
 
-        <p id="partnerMessage" class="message"></p>
+    <section>
 
-        <div class="table-wrapper">
+        <h2>Partner Records</h2>
+
+        <button onclick="loadPartnerRecords()">
+            Retrieve Partner Records
+        </button>
+
+        <div class="table-container">
+
             <table>
+
                 <thead>
                     <tr>
                         <th>Student ID</th>
@@ -97,244 +133,414 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="partnerRecordsBody"></tbody>
+
+                <tbody id="partnerRecords"></tbody>
+
             </table>
+
         </div>
+
     </section>
 
-    <section class="panel">
-        <h2>Send Practice Record to Partner</h2>
 
-        <form id="sendForm">
-            <div class="form-grid">
-                <input type="text" id="send_student_id" placeholder="Student ID" required>
-                <input type="text" id="send_name" placeholder="Full Name" required>
-                <input type="text" id="send_program" placeholder="Program / Course" required>
-                <input type="number" id="send_year" placeholder="Year Level" min="1" max="6" required>
-                <input type="text" id="send_section" placeholder="Section" required>
-            </div>
+    <!-- SEND TO PARTNER -->
 
-            <button type="submit">Send to Partner API</button>
-        </form>
+    <section>
 
-        <p id="sendMessage" class="message"></p>
+        <h2>Send Record to Partner</h2>
+
+        <p>Send one fictional practice record to your assigned partner.</p>
+
+        <button onclick="sendToPartner()">
+            Send Practice Record
+        </button>
+
+        <pre id="sendResult"></pre>
+
     </section>
-</main>
+
+
+    <!-- IMPORTED RECORDS -->
+
+    <section>
+
+        <h2>Imported Records</h2>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Program</th>
+                        <th>Year</th>
+                        <th>Section</th>
+                        <th>Source</th>
+                    </tr>
+                </thead>
+
+                <tbody id="importedRecords"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
 
 <script>
-let myRecords = [];
-let partnerRecords = [];
 
+// =====================================
+// DISPLAY TABLE ROWS SAFELY
+// =====================================
+
+function addCell(row, value) {
+    const cell = document.createElement("td");
+    cell.textContent = value ?? "";
+    row.appendChild(cell);
+}
+
+
+// =====================================
+// LOAD MY RECORDS
+// =====================================
 
 async function loadMyRecords() {
+
     try {
+
         const response = await fetch("/api/students");
-        myRecords = await response.json();
 
-        displayMyRecords();
-        updateDashboard();
-    } catch (error) {
-        alert("Unable to load your records.");
-    }
-}
+        if (!response.ok) {
+            throw new Error("Unable to load records");
+        }
 
+        const students = await response.json();
 
-function displayMyRecords() {
-    const search = document.getElementById("mySearch").value.toLowerCase();
-    const tbody = document.getElementById("myRecordsBody");
+        const table = document.getElementById("myRecords");
+        table.innerHTML = "";
 
-    tbody.innerHTML = "";
+        students.forEach(student => {
 
-    const filtered = myRecords.filter(student =>
-        Object.values(student).some(value =>
-            String(value ?? "").toLowerCase().includes(search)
-        )
-    );
+            const row = document.createElement("tr");
 
-    filtered.forEach(student => {
-        const row = document.createElement("tr");
+            [
+                student.id,
+                student.student_id,
+                student.name,
+                student.program,
+                student.year,
+                student.section,
+                student.source || "Local"
+            ].forEach(value => addCell(row, value));
 
-        const values = [
-            student.id,
-            student.student_id,
-            student.name,
-            student.program,
-            student.year,
-            student.section,
-            student.source || "Local"
-        ];
+            const actions = document.createElement("td");
 
-        values.forEach(value => {
-            const cell = document.createElement("td");
-            cell.textContent = value ?? "";
-            row.appendChild(cell);
+            const edit = document.createElement("button");
+            edit.textContent = "Edit";
+
+            edit.onclick = () => editStudent(student);
+
+            const remove = document.createElement("button");
+            remove.textContent = "Delete";
+
+            remove.onclick = () => deleteStudent(student.id);
+
+            actions.append(edit, remove);
+            row.appendChild(actions);
+
+            table.appendChild(row);
+
         });
 
-        const actions = document.createElement("td");
+        loadDashboard();
 
-        const viewButton = document.createElement("button");
-        viewButton.textContent = "View";
-        viewButton.className = "small-button";
-        viewButton.onclick = () => viewRecord(student);
+    } catch (error) {
+        alert(error.message);
+    }
 
-        const editButton = document.createElement("button");
-        editButton.textContent = "Edit";
-        editButton.className = "small-button secondary";
-        editButton.onclick = () => editRecord(student);
-
-        const deleteButton = document.createElement("button");
-        deleteButton.textContent = "Delete";
-        deleteButton.className = "small-button danger";
-        deleteButton.onclick = () => deleteRecord(student.id);
-
-        actions.append(viewButton, editButton, deleteButton);
-        row.appendChild(actions);
-        tbody.appendChild(row);
-    });
 }
 
 
-function updateDashboard() {
-    const local = myRecords.filter(record =>
-        (record.source || "Local") === "Local"
-    ).length;
+// =====================================
+// ADD STUDENT
+// =====================================
 
-    const imported = myRecords.filter(record =>
-        (record.source || "").toLowerCase().includes("classmate")
-    ).length;
+document.getElementById("studentForm")
+.addEventListener("submit", async function(event) {
 
-    document.getElementById("localCount").textContent = local;
-    document.getElementById("importedCount").textContent = imported;
-    document.getElementById("partnerCount").textContent = partnerRecords.length;
-}
-
-
-function viewRecord(student) {
-    alert(
-        "Student ID: " + student.student_id +
-        "\nName: " + student.name +
-        "\nProgram: " + student.program +
-        "\nYear: " + student.year +
-        "\nSection: " + student.section +
-        "\nSource: " + (student.source || "Local")
-    );
-}
-
-
-function editRecord(student) {
-    document.getElementById("recordId").value = student.id;
-    document.getElementById("student_id").value = student.student_id;
-    document.getElementById("name").value = student.name;
-    document.getElementById("program").value = student.program;
-    document.getElementById("year").value = student.year;
-    document.getElementById("section").value = student.section;
-
-    document.getElementById("submitButton").textContent = "Update Record";
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-
-function resetForm() {
-    document.getElementById("studentForm").reset();
-    document.getElementById("recordId").value = "";
-    document.getElementById("submitButton").textContent = "Add Local Record";
-}
-
-
-document.getElementById("studentForm").addEventListener("submit", async function(event) {
     event.preventDefault();
 
-    const recordId = document.getElementById("recordId").value;
+    const student = Object.fromEntries(
+        new FormData(this).entries()
+    );
 
-    const data = {
-        student_id: document.getElementById("student_id").value,
-        name: document.getElementById("name").value,
-        program: document.getElementById("program").value,
-        year: document.getElementById("year").value,
-        section: document.getElementById("section").value,
-        source: "Local"
-    };
+    student.year = Number(student.year);
 
-    const url = recordId
-        ? `/api/students/${recordId}`
-        : "/api/students";
-
-    const method = recordId ? "PUT" : "POST";
-
-    const response = await fetch(url, {
-        method: method,
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(data)
+    const response = await fetch("/api/students", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(student)
     });
 
     const result = await response.json();
 
-    document.getElementById("formMessage").textContent =
-        result.message || result.error;
-
-    if (response.ok) {
-        resetForm();
-        loadMyRecords();
-    }
-});
-
-
-async function deleteRecord(id) {
-    if (!confirm("Are you sure you want to delete this record?")) {
+    if (!response.ok) {
+        alert(result.error || "Unable to add student");
         return;
     }
 
-    const response = await fetch(`/api/students/${id}`, {
-        method: "DELETE"
-    });
+    alert("Student added successfully!");
+
+    this.reset();
+
+    loadMyRecords();
+
+});
+
+
+// =====================================
+// EDIT STUDENT
+// =====================================
+
+async function editStudent(student) {
+
+    const updated = {
+        student_id: prompt("Student ID:", student.student_id),
+        name: prompt("Name:", student.name),
+        program: prompt("Program:", student.program),
+        year: prompt("Year:", student.year),
+        section: prompt("Section:", student.section)
+    };
+
+    if (Object.values(updated).some(value => value === null || value.trim() === "")) {
+        return;
+    }
+
+    updated.year = Number(updated.year);
+
+    const response = await fetch(
+        `/api/students/${student.id}`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updated)
+        }
+    );
 
     const result = await response.json();
+
     alert(result.message || result.error);
 
     loadMyRecords();
+
 }
 
 
-async function loadPartnerRecords() {
-    const message = document.getElementById("partnerMessage");
-    message.textContent = "Retrieving partner records...";
+// =====================================
+// DELETE STUDENT
+// =====================================
 
-    try {
-        const response = await fetch("/partner-records");
-        const result = await response.json();
+async function deleteStudent(id) {
 
-        if (!response.ok) {
-            throw new Error(result.error || "Unable to retrieve records.");
-        }
-
-        partnerRecords = result;
-        displayPartnerRecords();
-        updateDashboard();
-
-        message.textContent = partnerRecords.length + " partner record(s) retrieved.";
-    } catch (error) {
-        message.textContent = error.message;
-        partnerRecords = [];
-        displayPartnerRecords();
-        updateDashboard();
+    if (!confirm("Are you sure you want to delete this student?")) {
+        return;
     }
-}
 
-
-function displayPartnerRecords() {
-    const search = document.getElementById("partnerSearch").value.toLowerCase();
-    const tbody = document.getElementById("partnerRecordsBody");
-
-    tbody.innerHTML = "";
-
-    const filtered = partnerRecords.filter(student =>
-        Object.values(student).some(value =>
-            String(value ?? "").toLowerCase().includes(search)
-        )
+    const response = await fetch(
+        `/api/students/${id}`,
+        { method: "DELETE" }
     );
 
-    filtered.forEach(student => {
+    const result = await response.json();
+
+    alert(result.message || result.error);
+
+    loadMyRecords();
+
+}
+
+
+// =====================================
+// RETRIEVE PARTNER RECORDS
+// =====================================
+
+async function loadPartnerRecords() {
+
+    const table = document.getElementById("partnerRecords");
+
+    table.innerHTML = "<tr><td colspan='6'>Loading...</td></tr>";
+
+    try {
+
+        const response = await fetch("/partner-records");
+
+        const students = await response.json();
+
+        if (!response.ok) {
+            throw new Error(students.error || "Partner retrieval failed");
+        }
+
+        table.innerHTML = "";
+
+        students.forEach(student => {
+
+            const row = document.createElement("tr");
+
+            [
+                student.student_id,
+                student.name,
+                student.program,
+                student.year,
+                student.section
+            ].forEach(value => addCell(row, value));
+
+            const actions = document.createElement("td");
+
+            const view = document.createElement("button");
+            view.textContent = "View";
+
+            view.onclick = () => {
+                alert(
+                    "Student ID: " + student.student_id +
+                    "\nName: " + student.name +
+                    "\nProgram: " + student.program +
+                    "\nYear: " + student.year +
+                    "\nSection: " + student.section
+                );
+            };
+
+            const save = document.createElement("button");
+            save.textContent = "Save to My Database";
+
+            save.onclick = () => savePartnerRecord(student);
+
+            actions.append(view, save);
+            row.appendChild(actions);
+
+            table.appendChild(row);
+
+        });
+
+        if (students.length === 0) {
+            table.innerHTML = "<tr><td colspan='6'>No partner records found.</td></tr>";
+        }
+
+        document.getElementById("partnerCount").textContent = students.length;
+
+    } catch (error) {
+
+        table.innerHTML =
+            `<tr><td colspan="6">${error.message}</td></tr>`;
+
+    }
+
+}
+
+
+// =====================================
+// IMPORT PARTNER RECORD
+// =====================================
+
+async function savePartnerRecord(student) {
+
+    if (!confirm("Save this partner record to your database?")) {
+        return;
+    }
+
+    const response = await fetch("/import-student", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(student)
+
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        alert(result.error || "Import failed");
+        return;
+    }
+
+    alert("Partner record saved successfully!");
+
+    loadMyRecords();
+
+}
+
+
+// =====================================
+// SEND RECORD TO PARTNER
+// =====================================
+
+async function sendToPartner() {
+
+    const resultBox = document.getElementById("sendResult");
+
+    resultBox.textContent = "Sending record...";
+
+    try {
+
+        const response = await fetch("/send-to-partner", {
+            method: "POST"
+        });
+
+        const result = await response.json();
+
+        resultBox.textContent = JSON.stringify(
+            result,
+            null,
+            2
+        );
+
+    } catch (error) {
+
+        resultBox.textContent = error.message;
+
+    }
+
+}
+
+
+// =====================================
+// LOAD DASHBOARD
+// =====================================
+
+async function loadDashboard() {
+
+    const response = await fetch("/dashboard-data");
+
+    if (!response.ok) {
+        return;
+    }
+
+    const data = await response.json();
+
+    document.getElementById("localCount").textContent =
+        data.local.length;
+
+    document.getElementById("importedCount").textContent =
+        data.imported.length;
+
+    const importedTable = document.getElementById("importedRecords");
+
+    importedTable.innerHTML = "";
+
+    data.imported.forEach(student => {
+
         const row = document.createElement("tr");
 
         [
@@ -342,79 +548,23 @@ function displayPartnerRecords() {
             student.name,
             student.program,
             student.year,
-            student.section
-        ].forEach(value => {
-            const cell = document.createElement("td");
-            cell.textContent = value ?? "";
-            row.appendChild(cell);
-        });
+            student.section,
+            student.source
+        ].forEach(value => addCell(row, value));
 
-        const actions = document.createElement("td");
+        importedTable.appendChild(row);
 
-        const viewButton = document.createElement("button");
-        viewButton.textContent = "View";
-        viewButton.className = "small-button";
-        viewButton.onclick = () => viewRecord(student);
-
-        const saveButton = document.createElement("button");
-        saveButton.textContent = "Save";
-        saveButton.className = "small-button";
-        saveButton.onclick = () => importStudent(student);
-
-        actions.append(viewButton, saveButton);
-        row.appendChild(actions);
-        tbody.appendChild(row);
     });
+
 }
 
 
-async function importStudent(student) {
-    const response = await fetch("/import-student", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(student)
-    });
-
-    const result = await response.json();
-
-    alert(result.message || result.error);
-
-    if (response.ok) {
-        loadMyRecords();
-    }
-}
-
-
-document.getElementById("sendForm").addEventListener("submit", async function(event) {
-    event.preventDefault();
-
-    const data = {
-        student_id: document.getElementById("send_student_id").value,
-        name: document.getElementById("send_name").value,
-        program: document.getElementById("send_program").value,
-        year: document.getElementById("send_year").value,
-        section: document.getElementById("send_section").value,
-        source: "Partner API"
-    };
-
-    const response = await fetch("/send-to-partner", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(data)
-    });
-
-    const result = await response.json();
-
-    document.getElementById("sendMessage").textContent =
-        result.message || result.error;
-
-    if (response.ok) {
-        document.getElementById("sendForm").reset();
-    }
-});
-
+// =====================================
+// INITIAL LOAD
+// =====================================
 
 loadMyRecords();
+
 </script>
 
 </body>
